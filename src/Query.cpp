@@ -1,6 +1,10 @@
 #include "dayforge/Query.hpp"
 
 #include <algorithm>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 namespace dayforge {
 
@@ -52,6 +56,22 @@ std::map<std::string, int> count_by_tag(const std::vector<Entry>& entries) {
         }
     }
     return counts;
+}
+
+std::string today_local_date() {
+    const auto now = std::chrono::system_clock::now();
+    const auto time = std::chrono::system_clock::to_time_t(now);
+
+    std::tm tm{};
+#if defined(_WIN32)
+    localtime_s(&tm, &time);
+#else
+    localtime_r(&time, &tm);
+#endif
+
+    std::ostringstream out;
+    out << std::put_time(&tm, "%Y-%m-%d");
+    return out.str();
 }
 
 } // namespace dayforge

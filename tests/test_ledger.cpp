@@ -4,6 +4,7 @@
 #include <cassert>
 #include <filesystem>
 #include <iostream>
+#include <vector>
 
 namespace {
 
@@ -68,12 +69,21 @@ void counts_tags() {
     assert(counts.at("untagged") == 1);
 }
 
+void local_today_uses_date_format() {
+    const auto today = dayforge::today_local_date();
+
+    assert(today.size() == 10);
+    assert(today[4] == '-');
+    assert(today[7] == '-');
+}
+
 } // namespace
 
 int main() {
     round_trips_entries_with_escaped_fields();
     filters_by_date_and_tag();
     counts_tags();
+    local_today_uses_date_format();
 
     std::cout << "dayforge tests passed\n";
     return 0;

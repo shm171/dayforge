@@ -24,6 +24,7 @@ void print_usage() {
         << "dayforge - local development journal\n\n"
         << "Usage:\n"
         << "  dayforge add --title <text> [--tag <name> ...] [--note <text>] [--file <path>]\n"
+        << "  dayforge today [--file <path>]\n"
         << "  dayforge list [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n"
         << "  dayforge stats [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n";
 }
@@ -78,6 +79,13 @@ void print_entry(const dayforge::Entry& entry) {
     std::cout << "\n";
 }
 
+void print_tag_counts(const std::vector<dayforge::Entry>& entries) {
+    const auto counts = dayforge::count_by_tag(entries);
+    for (const auto& [tag, count] : counts) {
+        std::cout << tag << ": " << count << "\n";
+    }
+}
+
 int run(int argc, char* argv[]) {
     const auto args = parse_args(argc, argv);
     if (args.command.empty() || args.command == "--help" || args.command == "-h") {
@@ -102,6 +110,30 @@ int run(int argc, char* argv[]) {
         return 0;
     }
 
+    if (args.command == "today") {
+        dayforge::Query query;
+        const auto today = dayforge::today_local_date();
+        query.from_date = today;
+        query.to_date = today;
+
+        const auto entries = dayforge::filter_entries(ledger.read_all(), query);
+
+        std::cout << today << " summary\n";
+        std::cout << "entries: " << entries.size() << "\n";
+
+        if (!entries.empty()) {
+            std::cout << "\n";
+            for (const auto& entry : entries) {
+                print_entry(entry);
+            }
+
+            std::cout << "\ntags:\n";
+            print_tag_counts(entries);
+        }
+
+        return 0;
+    }
+
     if (args.command == "list") {
         const auto entries = dayforge::filter_entries(ledger.read_all(), args.query);
         for (const auto& entry : entries) {
@@ -112,10 +144,7 @@ int run(int argc, char* argv[]) {
 
     if (args.command == "stats") {
         const auto entries = dayforge::filter_entries(ledger.read_all(), args.query);
-        const auto counts = dayforge::count_by_tag(entries);
-        for (const auto& [tag, count] : counts) {
-            std::cout << tag << ": " << count << "\n";
-        }
+        print_tag_counts(entries);
         return 0;
     }
 

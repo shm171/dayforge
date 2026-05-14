@@ -11,6 +11,8 @@
 - `Query` owns filtering and aggregation behavior.
 - `main.cpp` is intentionally thin command routing.
 
+The `today` command is built from the same query and aggregation primitives as `list` and `stats`, so daily summaries stay consistent with broader reports.
+
 ## Storage format
 
 The ledger is append-only TSV with five fields:

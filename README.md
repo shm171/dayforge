@@ -16,6 +16,7 @@ ctest --test-dir build
 
 ```powershell
 .\build\Debug\dayforge.exe add --title "Start dayforge" --tag cpp --tag cli --note "Initial ledger implementation"
+.\build\Debug\dayforge.exe today
 .\build\Debug\dayforge.exe list --tag cpp
 .\build\Debug\dayforge.exe stats
 ```
@@ -25,6 +26,7 @@ By default, entries are stored in `dayforge.tsv` in the current directory. Use `
 ## Commands
 
 - `add --title <text> [--tag <name> ...] [--note <text>]`
+- `today [--file <path>]`
 - `list [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD]`
 - `stats [--from YYYY-MM-DD] [--to YYYY-MM-DD]`
 

@@ -19,5 +19,6 @@ bool matches_query(const Entry& entry, const Query& query);
 std::vector<Entry> filter_entries(const std::vector<Entry>& entries, const Query& query);
 std::map<std::string, int> count_by_tag(const std::vector<Entry>& entries);
 std::string entry_date(const Entry& entry);
+std::string today_local_date();
 
 } // namespace dayforge

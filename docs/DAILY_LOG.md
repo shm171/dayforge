@@ -7,3 +7,7 @@
 - Added CLI commands: `add`, `list`, and `stats`.
 - Added tests for persistence, filtering, and tag counts.
 - Wrote initial design notes and roadmap.
+
+- Added the `today` command for quick daily summaries.
+- Reused query filtering and tag aggregation instead of adding a separate reporting path.
+- Documented the new command and expanded tests around local date formatting.
