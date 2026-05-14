@@ -10,6 +10,7 @@ add_library(dayforge_core
     src/Entry.cpp
     src/Ledger.cpp
     src/Query.cpp
+    src/Report.cpp
 )
 
 target_include_directories(dayforge_core PUBLIC include)

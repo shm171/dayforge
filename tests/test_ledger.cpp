@@ -1,9 +1,11 @@
 #include "dayforge/Ledger.hpp"
 #include "dayforge/Query.hpp"
+#include "dayforge/Report.hpp"
 
 #include <cassert>
 #include <filesystem>
 #include <iostream>
+#include <string>
 #include <vector>
 
 namespace {
@@ -77,6 +79,20 @@ void local_today_uses_date_format() {
     assert(today[7] == '-');
 }
 
+void renders_markdown_report_grouped_by_date() {
+    std::vector<dayforge::Entry> entries;
+    entries.push_back(dayforge::Entry{"", "2026-05-14T09:00:00Z", "Core", {"cpp"}, "Build the ledger"});
+    entries.push_back(dayforge::Entry{"", "2026-05-14T10:00:00Z", "Docs", {"docs"}, ""});
+
+    const auto report = dayforge::render_markdown_report(entries, "Test report");
+
+    assert(report.find("# Test report") != std::string::npos);
+    assert(report.find("Total entries: 2") != std::string::npos);
+    assert(report.find("### 2026-05-14") != std::string::npos);
+    assert(report.find("- Core [`cpp`]") != std::string::npos);
+    assert(report.find("Build the ledger") != std::string::npos);
+}
+
 } // namespace
 
 int main() {
@@ -84,6 +100,7 @@ int main() {
     filters_by_date_and_tag();
     counts_tags();
     local_today_uses_date_format();
+    renders_markdown_report_grouped_by_date();
 
     std::cout << "dayforge tests passed\n";
     return 0;

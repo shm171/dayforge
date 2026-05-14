@@ -11,3 +11,5 @@
 - Added the `today` command for quick daily summaries.
 - Reused query filtering and tag aggregation instead of adding a separate reporting path.
 - Documented the new command and expanded tests around local date formatting.
+- Added Markdown report export for turning ledger entries into review notes.
+- Documented a Windows CMake and g++ setup path using MSYS2 UCRT64.

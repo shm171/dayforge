@@ -1,8 +1,10 @@
 #include "dayforge/Ledger.hpp"
 #include "dayforge/Query.hpp"
+#include "dayforge/Report.hpp"
 
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -16,6 +18,7 @@ struct ParsedArgs {
     std::string title;
     std::vector<std::string> tags;
     std::string note;
+    std::filesystem::path output;
     dayforge::Query query;
 };
 
@@ -26,7 +29,8 @@ void print_usage() {
         << "  dayforge add --title <text> [--tag <name> ...] [--note <text>] [--file <path>]\n"
         << "  dayforge today [--file <path>]\n"
         << "  dayforge list [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n"
-        << "  dayforge stats [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n";
+        << "  dayforge stats [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n"
+        << "  dayforge export-md --output <path> [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n";
 }
 
 std::string take_value(int& index, int argc, char* argv[], const std::string& option) {
@@ -48,6 +52,8 @@ ParsedArgs parse_args(int argc, char* argv[]) {
         const std::string arg = argv[i];
         if (arg == "--file") {
             parsed.file = take_value(i, argc, argv, arg);
+        } else if (arg == "--output") {
+            parsed.output = take_value(i, argc, argv, arg);
         } else if (arg == "--title") {
             parsed.title = take_value(i, argc, argv, arg);
         } else if (arg == "--tag") {
@@ -84,6 +90,19 @@ void print_tag_counts(const std::vector<dayforge::Entry>& entries) {
     for (const auto& [tag, count] : counts) {
         std::cout << tag << ": " << count << "\n";
     }
+}
+
+void write_text_file(const std::filesystem::path& path, const std::string& text) {
+    const auto parent = path.parent_path();
+    if (!parent.empty()) {
+        std::filesystem::create_directories(parent);
+    }
+
+    std::ofstream out(path);
+    if (!out) {
+        throw std::runtime_error("could not open output file: " + path.string());
+    }
+    out << text;
 }
 
 int run(int argc, char* argv[]) {
@@ -145,6 +164,19 @@ int run(int argc, char* argv[]) {
     if (args.command == "stats") {
         const auto entries = dayforge::filter_entries(ledger.read_all(), args.query);
         print_tag_counts(entries);
+        return 0;
+    }
+
+    if (args.command == "export-md") {
+        if (args.output.empty()) {
+            throw std::runtime_error("export-md requires --output");
+        }
+
+        const auto entries = dayforge::filter_entries(ledger.read_all(), args.query);
+        const auto report = dayforge::render_markdown_report(entries, "dayforge report");
+        write_text_file(args.output, report);
+
+        std::cout << "exported " << entries.size() << " entries to " << args.output.string() << "\n";
         return 0;
     }
 
