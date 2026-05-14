@@ -10,6 +10,7 @@
 - `Ledger` owns file IO and directory creation.
 - `Query` owns filtering and aggregation behavior.
 - `Report` owns Markdown rendering for human-readable summaries.
+- `Dashboard` owns terminal dashboard rendering.
 - `main.cpp` is intentionally thin command routing.
 
 The `today` and `week` commands are built from the same query and aggregation primitives as `list` and `stats`, so daily summaries stay consistent with broader reports.

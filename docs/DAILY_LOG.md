@@ -15,3 +15,5 @@
 - Documented a Windows CMake and g++ setup path using MSYS2 UCRT64.
 - Added the `week` command for seven-day summaries with daily counts and tag totals.
 - Added reusable date counting and local date offset helpers.
+- Added a plain terminal dashboard via the `ui` command.
+- Kept the first UI pass dependency-free so it builds on Windows with the existing toolchain.

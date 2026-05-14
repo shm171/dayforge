@@ -1,3 +1,4 @@
+#include "dayforge/Dashboard.hpp"
 #include "dayforge/Ledger.hpp"
 #include "dayforge/Query.hpp"
 #include "dayforge/Report.hpp"
@@ -30,6 +31,7 @@ void print_usage() {
         << "  dayforge add --title <text> [--tag <name> ...] [--note <text>] [--file <path>]\n"
         << "  dayforge today [--file <path>]\n"
         << "  dayforge week [--file <path>]\n"
+        << "  dayforge ui [--file <path>]\n"
         << "  dayforge list [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n"
         << "  dayforge stats [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n"
         << "  dayforge export-md --output <path> [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n";
@@ -190,6 +192,11 @@ int run(int argc, char* argv[]) {
             print_tag_counts(entries);
         }
 
+        return 0;
+    }
+
+    if (args.command == "ui") {
+        std::cout << dayforge::render_terminal_dashboard(ledger.read_all());
         return 0;
     }
 

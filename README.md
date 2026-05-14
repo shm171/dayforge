@@ -18,6 +18,7 @@ ctest --test-dir build
 .\build\Debug\dayforge.exe add --title "Start dayforge" --tag cpp --tag cli --note "Initial ledger implementation"
 .\build\Debug\dayforge.exe today
 .\build\Debug\dayforge.exe week
+.\build\Debug\dayforge.exe ui
 .\build\Debug\dayforge.exe list --tag cpp
 .\build\Debug\dayforge.exe stats
 .\build\Debug\dayforge.exe export-md --output reports\week.md
@@ -30,6 +31,7 @@ By default, entries are stored in `dayforge.tsv` in the current directory. Use `
 - `add --title <text> [--tag <name> ...] [--note <text>]`
 - `today [--file <path>]`
 - `week [--file <path>]`
+- `ui [--file <path>]`
 - `list [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD]`
 - `stats [--from YYYY-MM-DD] [--to YYYY-MM-DD]`
 - `export-md --output <path> [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD]`

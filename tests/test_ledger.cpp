@@ -1,3 +1,4 @@
+#include "dayforge/Dashboard.hpp"
 #include "dayforge/Ledger.hpp"
 #include "dayforge/Query.hpp"
 #include "dayforge/Report.hpp"
@@ -115,6 +116,18 @@ void renders_markdown_report_grouped_by_date() {
     assert(report.find("Build the ledger") != std::string::npos);
 }
 
+void renders_terminal_dashboard() {
+    std::vector<dayforge::Entry> entries;
+    entries.push_back(dayforge::Entry{"", dayforge::today_local_date() + "T09:00:00Z", "Build dashboard", {"ui", "cpp"}, ""});
+
+    const auto dashboard = dayforge::render_terminal_dashboard(entries);
+
+    assert(dashboard.find("dayforge terminal dashboard") != std::string::npos);
+    assert(dashboard.find("last 7 days") != std::string::npos);
+    assert(dashboard.find("top tags this week") != std::string::npos);
+    assert(dashboard.find("Build dashboard") != std::string::npos);
+}
+
 } // namespace
 
 int main() {
@@ -125,6 +138,7 @@ int main() {
     local_today_uses_date_format();
     local_date_days_ago_uses_date_format();
     renders_markdown_report_grouped_by_date();
+    renders_terminal_dashboard();
 
     std::cout << "dayforge tests passed\n";
     return 0;
