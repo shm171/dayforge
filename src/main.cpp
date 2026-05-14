@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -28,6 +29,7 @@ void print_usage() {
         << "Usage:\n"
         << "  dayforge add --title <text> [--tag <name> ...] [--note <text>] [--file <path>]\n"
         << "  dayforge today [--file <path>]\n"
+        << "  dayforge week [--file <path>]\n"
         << "  dayforge list [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n"
         << "  dayforge stats [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n"
         << "  dayforge export-md --output <path> [--tag <name>] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--file <path>]\n";
@@ -92,6 +94,17 @@ void print_tag_counts(const std::vector<dayforge::Entry>& entries) {
     }
 }
 
+void print_daily_counts(const std::map<std::string, int>& counts, const std::vector<std::string>& dates) {
+    for (const auto& date : dates) {
+        auto count = 0;
+        const auto found = counts.find(date);
+        if (found != counts.end()) {
+            count = found->second;
+        }
+        std::cout << date << ": " << count << "\n";
+    }
+}
+
 void write_text_file(const std::filesystem::path& path, const std::string& text) {
     const auto parent = path.parent_path();
     if (!parent.empty()) {
@@ -146,6 +159,33 @@ int run(int argc, char* argv[]) {
                 print_entry(entry);
             }
 
+            std::cout << "\ntags:\n";
+            print_tag_counts(entries);
+        }
+
+        return 0;
+    }
+
+    if (args.command == "week") {
+        std::vector<std::string> dates;
+        dates.reserve(7);
+        for (int days_ago = 6; days_ago >= 0; --days_ago) {
+            dates.push_back(dayforge::local_date_days_ago(days_ago));
+        }
+
+        dayforge::Query query;
+        query.from_date = dates.front();
+        query.to_date = dates.back();
+
+        const auto entries = dayforge::filter_entries(ledger.read_all(), query);
+
+        std::cout << dates.front() << " to " << dates.back() << " summary\n";
+        std::cout << "entries: " << entries.size() << "\n\n";
+
+        std::cout << "days:\n";
+        print_daily_counts(dayforge::count_by_date(entries), dates);
+
+        if (!entries.empty()) {
             std::cout << "\ntags:\n";
             print_tag_counts(entries);
         }

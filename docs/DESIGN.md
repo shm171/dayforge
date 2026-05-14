@@ -12,7 +12,7 @@
 - `Report` owns Markdown rendering for human-readable summaries.
 - `main.cpp` is intentionally thin command routing.
 
-The `today` command is built from the same query and aggregation primitives as `list` and `stats`, so daily summaries stay consistent with broader reports.
+The `today` and `week` commands are built from the same query and aggregation primitives as `list` and `stats`, so daily summaries stay consistent with broader reports.
 
 ## Storage format
 
@@ -29,5 +29,5 @@ Tabs, newlines, and backslashes are escaped, so notes can contain multiline text
 - Add `edit` and `remove` using tombstone records instead of mutating history.
 - Add JSON export.
 - Add a richer query grammar: `tag:cpp after:2026-05-14`.
-- Add weekly summaries and streak reports.
+- Add streak reports.
 - Add a terminal UI once the core behavior is stable.

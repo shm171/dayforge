@@ -71,12 +71,34 @@ void counts_tags() {
     assert(counts.at("untagged") == 1);
 }
 
+void counts_entries_by_date() {
+    std::vector<dayforge::Entry> entries;
+    entries.push_back(dayforge::Entry{"", "2026-05-14T09:00:00Z", "Core", {"cpp"}, ""});
+    entries.push_back(dayforge::Entry{"", "2026-05-14T10:00:00Z", "Tests", {"tests"}, ""});
+    entries.push_back(dayforge::Entry{"", "2026-05-15T11:00:00Z", "Docs", {"docs"}, ""});
+    entries.push_back(dayforge::Entry{"", "", "Untimed", {}, ""});
+
+    const auto counts = dayforge::count_by_date(entries);
+
+    assert(counts.at("2026-05-14") == 2);
+    assert(counts.at("2026-05-15") == 1);
+    assert(counts.at("undated") == 1);
+}
+
 void local_today_uses_date_format() {
     const auto today = dayforge::today_local_date();
 
     assert(today.size() == 10);
     assert(today[4] == '-');
     assert(today[7] == '-');
+}
+
+void local_date_days_ago_uses_date_format() {
+    const auto date = dayforge::local_date_days_ago(6);
+
+    assert(date.size() == 10);
+    assert(date[4] == '-');
+    assert(date[7] == '-');
 }
 
 void renders_markdown_report_grouped_by_date() {
@@ -99,7 +121,9 @@ int main() {
     round_trips_entries_with_escaped_fields();
     filters_by_date_and_tag();
     counts_tags();
+    counts_entries_by_date();
     local_today_uses_date_format();
+    local_date_days_ago_uses_date_format();
     renders_markdown_report_grouped_by_date();
 
     std::cout << "dayforge tests passed\n";

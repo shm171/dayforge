@@ -44,6 +44,18 @@ std::vector<Entry> filter_entries(const std::vector<Entry>& entries, const Query
     return filtered;
 }
 
+std::map<std::string, int> count_by_date(const std::vector<Entry>& entries) {
+    std::map<std::string, int> counts;
+    for (const auto& entry : entries) {
+        auto date = entry_date(entry);
+        if (date.empty()) {
+            date = "undated";
+        }
+        ++counts[date];
+    }
+    return counts;
+}
+
 std::map<std::string, int> count_by_tag(const std::vector<Entry>& entries) {
     std::map<std::string, int> counts;
     for (const auto& entry : entries) {
@@ -58,8 +70,8 @@ std::map<std::string, int> count_by_tag(const std::vector<Entry>& entries) {
     return counts;
 }
 
-std::string today_local_date() {
-    const auto now = std::chrono::system_clock::now();
+std::string local_date_days_ago(const int days_ago) {
+    const auto now = std::chrono::system_clock::now() - std::chrono::hours(24 * days_ago);
     const auto time = std::chrono::system_clock::to_time_t(now);
 
     std::tm tm{};
@@ -72,6 +84,10 @@ std::string today_local_date() {
     std::ostringstream out;
     out << std::put_time(&tm, "%Y-%m-%d");
     return out.str();
+}
+
+std::string today_local_date() {
+    return local_date_days_ago(0);
 }
 
 } // namespace dayforge
