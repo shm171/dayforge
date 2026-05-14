@@ -17,3 +17,4 @@
 - Added reusable date counting and local date offset helpers.
 - Added a plain terminal dashboard via the `ui` command.
 - Kept the first UI pass dependency-free so it builds on Windows with the existing toolchain.
+- Simplified README and UI wording to sound closer to a small hand-written C++ tool.

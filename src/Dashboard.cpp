@@ -88,7 +88,7 @@ std::string render_terminal_dashboard(const std::vector<Entry>& entries) {
     }
 
     out << line('+', '=', '+');
-    out << row("dayforge terminal dashboard");
+    out << row("dayforge");
     out << line('+', '=', '+');
     out << row("today: " + std::to_string(today_entries.size()) +
                " entries   week: " + std::to_string(week_entries.size()) +
@@ -108,7 +108,7 @@ std::string render_terminal_dashboard(const std::vector<Entry>& entries) {
     }
 
     out << line('+', '-', '+');
-    out << row("top tags this week");
+    out << row("tags");
     if (tag_counts.empty()) {
         out << row("no tags yet");
     } else {
@@ -127,7 +127,7 @@ std::string render_terminal_dashboard(const std::vector<Entry>& entries) {
     }
 
     out << line('+', '-', '+');
-    out << row("latest entries");
+    out << row("recent");
     const auto latest = latest_entries(entries, 5);
     if (latest.empty()) {
         out << row("no entries yet; add one with: dayforge add --title \"...\"");
